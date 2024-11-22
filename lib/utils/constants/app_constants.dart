@@ -1,0 +1,2 @@
+
+const webSreenMinWidth = 550;
