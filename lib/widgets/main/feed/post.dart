@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:socially/models/post_model.dart';
+import 'package:socially/services/feed/feed_service.dart';
 import 'package:socially/utils/constants/colors.dart';
+import 'package:socially/utils/functions/function.dart';
 import 'package:socially/utils/functions/mood.dart';
 
 class PostWidget extends StatefulWidget {
@@ -22,6 +24,63 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  bool _isLiked = false;
+
+  // check if user alreay like
+  Future<void> _checkIfUserLiked() async {
+    final bool hasLiked = await FeedService().hasUserLikedPost(
+      postId: widget.post.postId,
+      userId: widget.currentUserId,
+    );
+
+    setState(() {
+      _isLiked = hasLiked;
+    });
+  }
+
+  // method to like and dislike
+  void _likeOrDisLikePost() async {
+    try {
+      if (_isLiked) {
+        await FeedService().disLikePost(
+          postId: widget.post.postId,
+          userId: widget.currentUserId,
+        );
+        setState(() {
+          _isLiked = false;
+        });
+        UtilFunctions().showSnackBarWdget(
+          context,
+          "Post unliked",
+        );
+      } else {
+        await FeedService().likePost(
+          postId: widget.post.postId,
+          userId: widget.currentUserId,
+        );
+        setState(() {
+          _isLiked = true;
+        });
+        UtilFunctions().showSnackBarWdget(
+          context,
+          "Post Liked",
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+      UtilFunctions().showSnackBarWdget(
+        context,
+        "fail to like or disLike",
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfUserLiked();
+  }
+
   @override
   Widget build(BuildContext context) {
     // format date
@@ -163,9 +222,10 @@ class _PostWidgetState extends State<PostWidget> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.favorite_border,
+                        onPressed: _likeOrDisLikePost,
+                        icon: Icon(
+                          _isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: _isLiked ? mainOrangeColor : mainWhiteColor,
                         ),
                       ),
                       Text(
@@ -186,10 +246,11 @@ class _PostWidgetState extends State<PostWidget> {
                                     const EdgeInsets.symmetric(vertical: 16),
                                 children: [
                                   _buildDialogOptions(
-                                      context: context,
-                                      icon: Icons.edit,
-                                      text: "Edit",
-                                      onTab: () {}),
+                                    context: context,
+                                    icon: Icons.edit,
+                                    text: "Edit",
+                                    onTab: () {},
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Divider(
@@ -197,10 +258,11 @@ class _PostWidgetState extends State<PostWidget> {
                                     ),
                                   ),
                                   _buildDialogOptions(
-                                      context: context,
-                                      icon: Icons.delete,
-                                      text: "Delete",
-                                      onTab: () {}),
+                                    context: context,
+                                    icon: Icons.delete,
+                                    text: "Delete",
+                                    onTab: () {},
+                                  ),
                                 ],
                               ),
                             );

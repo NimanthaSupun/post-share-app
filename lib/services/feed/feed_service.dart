@@ -55,4 +55,70 @@ class FeedService {
           .toList();
     });
   }
+
+  // method to like post
+  Future<void> likePost({
+    required String postId,
+    required String userId,
+  }) async {
+    try {
+      final DocumentReference postLikesRef =
+          _feedCollection.doc(postId).collection("likes").doc(userId);
+
+      await postLikesRef.set({"LikedAt": Timestamp.now()});
+
+      // update like count
+      final DocumentSnapshot postDoc = await _feedCollection.doc(postId).get();
+
+      final Post post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+
+      final int newLikes = post.likes + 1;
+
+      await _feedCollection.doc(postId).update({"likes": newLikes});
+      print("Post Likes Successfully");
+    } catch (e) {
+      print("Error Like post $e");
+    }
+  }
+
+  // method to unlike post
+  Future<void> disLikePost({
+    required String postId,
+    required String userId,
+  }) async {
+    try {
+      final DocumentReference postLikesRef =
+          _feedCollection.doc(postId).collection("likes").doc(userId);
+
+      await postLikesRef.delete();
+
+      // update like count
+      final DocumentSnapshot postDoc = await _feedCollection.doc(postId).get();
+
+      final Post post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+
+      final int newLikes = post.likes - 1;
+
+      await _feedCollection.doc(postId).update({"likes": newLikes});
+      print("Post disLikes Successfully");
+    } catch (e) {
+      print("Error disLike post $e");
+    }
+  }
+
+  // check if user like a post
+  Future<bool> hasUserLikedPost(
+    
+      {required String postId, required String userId}) async {
+    try {
+      final DocumentReference postLikeRef =
+          _feedCollection.doc(postId).collection("likes").doc(userId);
+
+      final DocumentSnapshot doc = await postLikeRef.get();
+      return doc.exists;
+    } catch (e) {
+      print("Error check if user like or not $e");
+      return false;
+    }
+  }
 }
