@@ -1,9 +1,12 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:socially/models/user_model.dart';
+import 'package:socially/services/feed/feed_service.dart';
+import 'package:socially/services/users/user_service.dart';
+import 'package:socially/utils/functions/function.dart';
 import 'package:socially/utils/functions/mood.dart';
 import 'package:socially/widgets/reusable/custom_button.dart';
 import 'package:socially/widgets/reusable/custom_input.dart';
@@ -30,6 +33,51 @@ class _CreateScreenState extends State<CreateScreen> {
       setState(() {
         _imageFile = File(pikedImage.path);
       });
+    }
+  }
+
+  // post submit mehtod
+  void _submitPost() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        setState(() {
+          _isUoloding = true;
+        });
+        // check if web
+        if (kIsWeb) {
+          return;
+        }
+
+        final String postCaption = _captionController.text;
+        final User? user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          // fetch user firestore
+          final UserModel? userData = await UserService().getUserById(
+            user.uid,
+          );
+
+          if (userData != null) {
+            final postDetails = {
+              'postCaption': postCaption,
+              'mood': _selectedMood.name, // Use enum name
+              'userId': userData.userId,
+              'username': userData.name,
+              'postUrl': _imageFile,
+              'profImage': userData.imageUrl,
+            };
+            await FeedService().savePost(postDetails);
+
+            UtilFunctions().showSnackBarWdget(context, "Post created");
+          }
+        }
+      } catch (e) {
+        print(e.toString());
+        UtilFunctions().showSnackBarWdget(context, "Post created fail");
+      } finally {
+        setState(() {
+          _isUoloding = false;
+        });
+      }
     }
   }
 
@@ -107,11 +155,17 @@ class _CreateScreenState extends State<CreateScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 16,
+                ),
                 ReusableButton(
-                  text: kIsWeb ? "Not supported yet":"Create Post",
+                  text: kIsWeb
+                      ? "Not supported yet"
+                      : _isUoloding
+                          ? "uploding..."
+                          : "Create Post",
                   width: MediaQuery.of(context).size.width,
-                  onPressed: () {
-                  },
+                  onPressed: _submitPost,
                 ),
               ],
             ),

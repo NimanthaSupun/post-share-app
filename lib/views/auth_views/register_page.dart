@@ -69,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
       //show snackbar
       if (context.mounted) {
-        UtilFunctions().showSnackBar(
+        UtilFunctions().showSnackBarWdget(
           context,
           "User Create Successfully",
         );
@@ -79,8 +79,8 @@ class _RegisterPageState extends State<RegisterPage> {
       print('Error signing up with email and password: $e');
 
       //show snackbar
-       if (context.mounted) {
-        UtilFunctions().showSnackBar(
+      if (context.mounted) {
+        UtilFunctions().showSnackBarWdget(
           context,
           "Error signing up with email and password: $e",
         );

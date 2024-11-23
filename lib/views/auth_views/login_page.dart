@@ -17,9 +17,9 @@ class LoginScreen extends StatelessWidget {
       // Sign in with Google
       await AuthService().signInWithGoogle();
 
-       // snakcbar
+      // snakcbar
       if (context.mounted) {
-        UtilFunctions().showSnackBar(
+        UtilFunctions().showSnackBarWdget(
           context,
           "User sign in successfully!",
         );
@@ -55,7 +55,7 @@ class LoginScreen extends StatelessWidget {
 
       // snakcbar
       if (context.mounted) {
-        UtilFunctions().showSnackBar(
+        UtilFunctions().showSnackBarWdget(
           context,
           "User sign in successfully!",
         );
