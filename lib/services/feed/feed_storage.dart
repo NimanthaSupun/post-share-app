@@ -6,7 +6,8 @@ class FeedStorage {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   // upload in image
-  Future<String> uploadImage({required File postImage, required String userId}) async {
+  Future<String> uploadImage(
+      {required File postImage, required String userId}) async {
     //  reference
     final Reference ref = _firebaseStorage.ref().child("feed-images").child(
           "$userId/${DateTime.now()}",
@@ -26,6 +27,15 @@ class FeedStorage {
     } catch (e) {
       print(e.toString());
       return "";
+    }
+  }
+
+  // remove post
+  Future<void> deleteImage({required String imageUrl}) async {
+    try {
+      await _firebaseStorage.refFromURL(imageUrl).delete();
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

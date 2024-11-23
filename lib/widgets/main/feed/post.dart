@@ -261,7 +261,10 @@ class _PostWidgetState extends State<PostWidget> {
                                     context: context,
                                     icon: Icons.delete,
                                     text: "Delete",
-                                    onTab: () {},
+                                    onTab: () {
+                                      widget.ondelete();
+                                      Navigator.of(context).pop();
+                                    },
                                   ),
                                 ],
                               ),

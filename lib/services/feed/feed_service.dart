@@ -13,7 +13,6 @@ class FeedService {
   Future<void> savePost(Map<String, dynamic> postDetails) async {
     try {
       String? postUrl;
-
       // check if post here
       if (postDetails["postUrl"] != null && postDetails["postUrl"] is File) {
         postUrl = await FeedStorage().uploadImage(
@@ -108,7 +107,6 @@ class FeedService {
 
   // check if user like a post
   Future<bool> hasUserLikedPost(
-    
       {required String postId, required String userId}) async {
     try {
       final DocumentReference postLikeRef =
@@ -119,6 +117,21 @@ class FeedService {
     } catch (e) {
       print("Error check if user like or not $e");
       return false;
+    }
+  }
+
+  // delete a post
+  Future<void> deletePost(
+      {required String postId, required String postUrl}) async {
+    try {
+      // remove from cloud
+      await FeedStorage().deleteImage(imageUrl: postUrl);
+
+      // delete document
+      await _feedCollection.doc(postId).delete();
+      print("post is deleted");
+    } catch (e) {
+      print("Error deleting psot $e");
     }
   }
 }
