@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:socially/models/reel_model.dart';
+import 'package:socially/services/reels/reel_storage.dart';
 
 class ReelServices {
   // coolection references
@@ -32,5 +33,17 @@ class ReelServices {
   // method fetch reels
   Stream<QuerySnapshot> getReel() {
     return _reelsCollection.snapshots();
+  }
+
+  // delete video
+  Future<void> deleteReel(Reel reel) async {
+    try {
+      await ReelStorage().deleteVideo(
+        videoUrl: reel.vedioUrl,
+      );
+      await _reelsCollection.doc(reel.reelId).delete();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socially/models/user_model.dart';
 import 'package:socially/views/auth_views/login_page.dart';
 import 'package:socially/views/main_screen.dart';
 import 'package:socially/views/auth_views/register_page.dart';
+import 'package:socially/views/main_screens/single_user_screen.dart';
 import 'package:socially/views/responsive/mobile_layout.dart';
 import 'package:socially/views/responsive/responsive_layout.dart';
 import 'package:socially/views/responsive/web_layout.dart';
@@ -31,7 +33,6 @@ class RouterClass {
       );
     },
     routes: [
-
       GoRoute(
         name: "/",
         path: "/",
@@ -42,7 +43,6 @@ class RouterClass {
           );
         },
       ),
-
       GoRoute(
         name: "register",
         path: "/register",
@@ -50,7 +50,6 @@ class RouterClass {
           return const RegisterPage();
         },
       ),
-
       GoRoute(
         name: "login",
         path: "/login",
@@ -58,7 +57,6 @@ class RouterClass {
           return LoginScreen();
         },
       ),
-
       GoRoute(
         name: "main Screen",
         path: "/main-screen",
@@ -66,7 +64,14 @@ class RouterClass {
           return const MainScreen();
         },
       ),
-      
+      GoRoute(
+        name: "user profile",
+        path: "/user-profile",
+        builder: (context, state) {
+          final UserModel user = state.extra as UserModel;
+          return SingleUserScreen(user: user);
+        },
+      ),
     ],
   );
 }

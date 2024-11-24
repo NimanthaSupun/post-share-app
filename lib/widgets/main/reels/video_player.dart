@@ -54,13 +54,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       _isPlaying = !_isPlaying;
     });
   }
-
   @override
   void dispose() {
     super.dispose();
     _controller.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Stack(

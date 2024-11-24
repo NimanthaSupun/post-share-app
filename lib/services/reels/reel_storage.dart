@@ -26,4 +26,14 @@ class ReelStorage {
       return "";
     }
   }
+
+  // delete video
+  Future<void> deleteVideo({required String videoUrl}) async {
+    try {
+      final Reference ref = _firebaseStorage.refFromURL(videoUrl);
+      await ref.delete();
+    } catch (e) {
+      print("Error deleting video");
+    }
+  }
 }

@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socially/models/reel_model.dart';
+import 'package:socially/services/reels/reel_services.dart';
 import 'package:socially/utils/constants/colors.dart';
 import 'package:socially/widgets/main/reels/video_player.dart';
 
@@ -80,14 +82,15 @@ class ReelWidget extends StatelessWidget {
                     Icons.edit,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.delete,
+                if (reel.userId == FirebaseAuth.instance.currentUser!.uid)
+                  IconButton(
+                    onPressed: () => ReelServices().deleteReel(reel),
+                    icon: const Icon(
+                      Icons.delete,
+                    ),
                   ),
-                ),
               ],
-            )
+            ),
           ],
         ),
       ),
