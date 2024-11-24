@@ -24,6 +24,7 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  
   bool _isLiked = false;
 
   // check if user alreay like

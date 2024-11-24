@@ -26,7 +26,7 @@ class FeedScreen extends StatelessWidget {
       print("Error deleting post $e");
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
