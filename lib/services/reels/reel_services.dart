@@ -24,9 +24,13 @@ class ReelServices {
           await _reelsCollection.add(newReel.toJson());
       await ref.update({"reelId": ref.id});
       print("Reel Stored");
-      
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  // method fetch reels
+  Stream<QuerySnapshot> getReel() {
+    return _reelsCollection.snapshots();
   }
 }
