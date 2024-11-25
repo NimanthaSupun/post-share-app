@@ -152,4 +152,15 @@ class FeedService {
       return [];
     }
   }
+  // Get the count of posts for a user
+  Future<int> getUserPostsCount(String userId) async {
+    try {
+      final snapshot =
+          await _feedCollection.where('userId', isEqualTo: userId).get();
+      return snapshot.size;
+    } catch (error) {
+      print('Error getting user posts count: $error');
+      return 0;
+    }
+  }
 }
