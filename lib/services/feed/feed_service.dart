@@ -134,4 +134,22 @@ class FeedService {
       print("Error deleting psot $e");
     }
   }
+
+  // get all post from user
+  Future<List<String>> getAllUserPostImages({required String userId}) async {
+    try {
+      final userPost = await _feedCollection
+          .where("userId", isEqualTo: userId)
+          .get()
+          .then((snapshot) {
+        return snapshot.docs.map((doc) {
+          return Post.fromJson(doc.data() as Map<String, dynamic>);
+        }).toList();
+      });
+      return userPost.map((post) => post.postUrl).toList();
+    } catch (e) {
+      print("Error fetching post: $e");
+      return [];
+    }
+  }
 }

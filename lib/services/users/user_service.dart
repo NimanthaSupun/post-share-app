@@ -85,13 +85,7 @@ class UserService {
   Future<void> followUser(String currentUserId, String userToFollowId) async {
     try {
       // Add the user to the followers collection
-      await _usersCollection
-          .doc(userToFollowId)
-          .collection('followers')
-          .doc(currentUserId)
-          .set({
-        'followedAt': Timestamp.now(),
-      });
+      await _usersCollection.doc(userToFollowId).collection('followers').doc(currentUserId).set({'followedAt': Timestamp.now(),});
 
       // Update follower count for the followed user
       final followedUserRef = _usersCollection.doc(userToFollowId);
